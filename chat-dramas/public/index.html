@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Chat Dramas</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>🎭 Chat Dramas</h1>
+    <textarea id="plot" placeholder="Enter dramatic plot..."></textarea>
+    <button onclick="generateChat()">Generate</button>
+
+    <div id="chatbox"></div>
+  </div>
+
+  <script>
+    async function generateChat() {
+      const plot = document.getElementById("plot").value;
+      const chatbox = document.getElementById("chatbox");
+      chatbox.innerHTML = "<p><em>Loading chat...</em></p>";
+
+      const res = await fetch("/api/generate-chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ plot })
+      });
+
+      const data = await res.json();
+      try {
+        const messages = JSON.parse(data.script);
+        chatbox.innerHTML = "";
+        for (const msg of messages) {
+          await new Promise(r => setTimeout(r, msg.delay || 1000));
+          const p = document.createElement("p");
+          p.innerHTML = `<strong>${msg.character}:</strong> ${msg.message}`;
+          chatbox.appendChild(p);
+          chatbox.scrollTop = chatbox.scrollHeight;
+        }
+      } catch (e) {
+        chatbox.innerHTML = "<p>❌ Failed to load chat format.</p>";
+        console.error(e);
+      }
+    }
+  </script>
+</body>
+</html>
