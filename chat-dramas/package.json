@@ -1,0 +1,9 @@
+{
+  "name": "chat-dramas",
+  "version": "1.0.0",
+  "description": "Dramatic AI chat generator",
+  "scripts": {
+    "start": "vercel dev"
+  },
+  "dependencies": {}
+}
